@@ -1,0 +1,20 @@
+CREATE TABLE Sales (
+  OrderID BIGINT PRIMARY KEY,
+  OrderDate DATETIME,
+  CustomerName VARCHAR(50),
+  ProductName VARCHAR(50),
+  Quantity INT,
+  Price DECIMAL(10, 2)
+);
+
+DECLARE @startDate DATETIME = '2023-01-01';
+DECLARE @endDate DATETIME = '2023-12-31';
+DECLARE @currentDate DATETIME = @startDate;
+
+WHILE @currentDate <= @endDate
+BEGIN
+  INSERT INTO Sales (OrderID, OrderDate, CustomerName, ProductName, Quantity, Price)
+  VALUES (CONVERT(BIGINT, CONVERT(VARCHAR(8), @currentDate, 112)) * 1000 + (SELECT COUNT(*) FROM Sales), @currentDate, 'Customer ' + CONVERT(VARCHAR(2), DATEPART(month, @currentDate)), 'Product ' + CONVERT(VARCHAR(2), DATEPART(day, @currentDate)), CONVERT(INT, (RAND() * 10) + 1), CONVERT(DECIMAL(10, 2), (RAND() * 100) + 1));
+  
+  SET @currentDate = DATEADD(day, 1, @currentDate);
+END;
